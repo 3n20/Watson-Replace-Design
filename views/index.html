@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Replace Design - Watson Assistant</title>
+   <link href="style.css" rel="stylesheet">
+</head>
+<body>
+  <header><br><br>
+      <blockquote>
+          <blockquote>
+              <img src="sysbot.png" height="200 px">
+              <h1>Replace Design - Watson Assistant</h1>
+              <br>
+              <br>
+              Workspace atualizada: <input type="Replace1" id="Replace1" />
+              <br>
+              <br>
+              Workspace a atualizar: <input type="Replace2" id="Replace2" />
+              <br>
+              <br>
+              <INPUT TYPE="checkbox" NAME="OPCAO" VALUE="intencoes" id="op1"> Intenções
+              <INPUT TYPE="checkbox" NAME="OPCAO" VALUE="entidades" id="op2"> Entidades
+              <INPUT TYPE="checkbox" NAME="OPCAO" VALUE="dialogo" id="op3"> Diálogo
+              <br>
+              <br>
+              <br>
+              <button onclick="ReplaceFunc()">Replace</button>
+          </blockquote>
+      </blockquote>
+  </header>
+   <br/>
+   <div id="log"></div>
+     <script>
+      var httpRequest;
+      function ReplaceFunc(){
+         var id1 = document.getElementById("Replace1").value;
+         var id2 = document.getElementById("Replace2").value;
+         var dt = new Date().toLocaleString().replace(/\S+\s(\S+)\s(\d+)\s(\d+)\s.*/,'$2-$1-$3');
+         var intencoes = document.getElementById("op1").checked;
+         var entidades = document.getElementById("op2").checked;
+         var dialogo = document.getElementById("op3").checked;
+          //alert(entidades);
+          //alert(intencoes);
+          //alert(dialogo);
+
+         $('#log').append('<br/><br/>'+ dt + '<br/>')
+         $('#log').append('Reunindo informações da Workspace ID: '+ id1  + ' e buscando Workspace ID: '+ id2 +'<br/>')
+         $.ajax
+         (
+         {
+            url: '/update',
+            type: 'POST',
+             contentType: 'application/json',
+             data: JSON.stringify({id1: id1 , id2: id2, entidades: entidades, intencoes: intencoes, dialogo: dialogo}),
+             beforeSend: function(){
+                  $('#log').append ('Iniciando processo...<br/>');
+             },
+            success: function(data)
+            {
+               var Ws1 = data.nome1;
+               var Ws2 = data.nome2;
+               var ObjAtu = data.nome3;
+               $('#log').append('Atualizou a workspace: ' + Ws2 + ' com '+ ObjAtu + ' da workspace: ' + Ws1 + '<br/>');
+            }        
+         }
+         ); 
+      }
+   </script>  
+<script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+</body>
+</html>
